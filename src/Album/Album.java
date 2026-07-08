@@ -5,12 +5,14 @@ import java.io.*;
 public class Album {
     private int[][] matriz;
     private String caminhoArquivo;
+    private String nome;
 
     //=======================
     // Método de leitura do arquivo
     //=======================
-    public Album(String caminhoArquivo, int selecoesNum, int jogadoresNum) throws IOException {
-        this.caminhoArquivo = new File("").getAbsolutePath().concat("/src/data/" + caminhoArquivo + "Album.txt");
+    public Album(String caminhoArquivo, int selecoesNum, int jogadoresNum) throws IOException, FileNotFoundException {
+        nome = caminhoArquivo;
+        this.caminhoArquivo = new File("").getAbsolutePath().concat("/src/data/" + nome + "Album.txt");
 
         try (BufferedReader br = new BufferedReader(new FileReader(this.caminhoArquivo))) {
             matriz = new int[selecoesNum][jogadoresNum];
@@ -100,5 +102,13 @@ public class Album {
                 string = string.concat(selecao);
         }
         return string;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public int[][] getMatriz() {
+        return matriz;
     }
 }
