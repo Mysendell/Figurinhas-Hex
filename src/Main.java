@@ -91,20 +91,21 @@ public class Main {
                         continue;
                     }
                     int[][] cartas = album.getMatriz();
-                    boolean possuiFaltantes = false;
+                    int totalFaltantes = 0;
                     System.out.print("Figurinhas faltantes do álbum " + album.getNome() + ": ");
                     for(int i = 0; i < cartas.length; i++) {
                         for(int j = 0; j < cartas[0].length; j++) {
                             if(cartas[i][j] == 0) {
-                                if(!possuiFaltantes) {
-                                    possuiFaltantes = true;
+                                if(totalFaltantes == 0) {
                                     System.out.println();
                                 }
                                 System.out.println("\tSeleção " + selecoes.getSelecao(i) + " jogador " + j);
+                                totalFaltantes++;
                             }
                         }
                     }
-                    if(!possuiFaltantes) System.out.println("Não possui");
+                    if(totalFaltantes == 0) System.out.println("Não possui");
+                    else System.out.println("Total: " + totalFaltantes + (totalFaltantes > 1? " figurinhas faltantes" : " figurinha faltante"));
                 }
                 case 5 -> {
                     if(album == null) {
@@ -112,20 +113,21 @@ public class Main {
                         continue;
                     }
                     int[][] cartas = album.getMatriz();
-                    boolean possuiRepetidas = false;
+                    int totalRepetidas = 0;
                     System.out.print("Figurinhas repetidas do álbum " + album.getNome() + ": ");
                     for(int i = 0; i < cartas.length; i++) {
                         for(int j = 0; j < cartas[0].length; j++) {
                             if(cartas[i][j] > 1) {
-                                if(!possuiRepetidas) {
-                                    possuiRepetidas = true;
+                                if(totalRepetidas == 0) {
                                     System.out.println();
                                 }
-                                System.out.println("\tSeleção " + selecoes.getSelecao(i) + " jogador " + j);
+                                System.out.println("\tSeleção " + selecoes.getSelecao(i) + " jogador " + j + " - x" + cartas[i][j]);
+                                totalRepetidas++;
                             }
                         }
                     }
-                    if(!possuiRepetidas) System.out.println("Não possui");
+                    if(totalRepetidas == 0) System.out.println("Não possui");
+                    else System.out.println("Total: " + totalRepetidas + (totalRepetidas > 1? " figurinhas repetidas" : " figurinha repetida"));
                 }
                 case 6 -> {
                     return;
