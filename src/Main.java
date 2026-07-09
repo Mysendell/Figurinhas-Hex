@@ -199,7 +199,7 @@ public class Main {
         jogador = scanner.nextInt();
         System.out.print("Digite a quantidade de figurinhas a inserir: ");
         quantidade = scanner.nextInt();
-        album.inserirJogador(selecaoNum, jogador, quantidade);
+        album.inserirJogador(selecaoNum, jogador, quantidade); //todo treat out of bounds
         novas[selecaoNum][jogador]++;
         scanner.nextLine();
     }
