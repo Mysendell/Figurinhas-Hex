@@ -111,4 +111,8 @@ public class Album {
     public int[][] getMatriz() {
         return matriz;
     }
+
+    public void setMatriz(int[][] novaMatriz) {
+        matriz = novaMatriz;
+    }
 }

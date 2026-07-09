@@ -3,6 +3,7 @@ import Album.Selecoes;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -11,11 +12,12 @@ import java.util.Scanner;
 
 public class Main {
     static Selecoes selecoes = Selecoes.getInstance();
+    static Scanner scanner = new Scanner(System.in);
+    static Album album = null;
+    static int linhas = 0, colunas = 0;
+    static int[][] novas = new int[0][0];
     public static void main(String[] args) throws IOException {
-        Scanner scanner = new Scanner(System.in);
-        int linhas = 0, colunas = 0, instrucao = 0;
-        Album album = null;
-        int[][] novas = new int[0][0];
+        int instrucao = 0;
 
         while (true) {
             printMenu();
@@ -32,10 +34,7 @@ public class Main {
                     try {
                         System.out.print("Digite o nome do álbum a ser carregado: ");
                         String nomeArquivo = scanner.nextLine().trim().toLowerCase();
-                        album = new Album(nomeArquivo, selecoes.getSELECOES(), selecoes.getJOGADORES());
-                        linhas = album.getMatriz().length;
-                        colunas = album.getMatriz()[0].length;
-                        novas = new int[linhas][colunas];
+                        carregarAlbum(nomeArquivo);
                     } catch(FileNotFoundException e) {
                         System.out.println("Álbum não encontrado");
                     }
@@ -45,7 +44,7 @@ public class Main {
                         System.out.println("Carregue seu álbum primeiro!");
                         continue;
                     }
-                    inserirCarta(scanner, album, novas);
+                    inserirCarta(album, novas);
                 }
                 case 3 -> {
                     try {
@@ -53,43 +52,7 @@ public class Main {
                             System.out.println("Carregue seu álbum primeiro!");
                             continue;
                         }
-                        String nomeArquivo;
-                        Album albumTroca;
-                        int[][] albumTrocaMatriz;
-                        int[][] albumUsuario = album.getMatriz();
-                        System.out.print("Álbum com que realizar a troca: ");
-                        nomeArquivo = scanner.nextLine().trim().toLowerCase();
-                        if(nomeArquivo.equals(album.getNome())) {
-                            System.out.println("Você não pode trocar com si mesmo");
-                        } else {
-                            albumTroca = new Album(nomeArquivo, selecoes.getSELECOES(), selecoes.getJOGADORES());
-                            albumTrocaMatriz = albumTroca.getMatriz();
-                            if(albumTrocaMatriz.length != linhas || albumTrocaMatriz[0].length != colunas) {
-                                System.out.println("Álbuns de tipos diferentes");
-                                break;
-                            }
-                            for (int i = 0; i < linhas; i++) {
-                                for (int j = 0; j < colunas; j++) {
-                                    if (albumUsuario[i][j] == 0 && albumTrocaMatriz[i][j] > 1) {
-                                        for (int k = 0; k < linhas; k++) {
-                                            for (int l = 0; l < colunas; l++) {
-                                                if (albumTrocaMatriz[k][l] == 0 && albumUsuario[k][l] > 1) {
-                                                    albumUsuario[i][j]++;
-                                                    albumTrocaMatriz[i][j]--;
-                                                    albumUsuario[k][l]--;
-                                                    albumTrocaMatriz[k][l]++;
-                                                    novas[i][j]++;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            System.out.println("Seu álbum atualizado:");
-                            album.exibirMatriz(); //ou toString()?
-                            System.out.println("Outro álbum atualizado:");
-                            albumTroca.exibirMatriz();
-                        }
+                        troca();
                     } catch(FileNotFoundException e) {
                         System.out.println("Álbum não encontrado");
                     }
@@ -99,81 +62,21 @@ public class Main {
                         System.out.println("Carregue seu álbum primeiro!");
                         continue;
                     }
-                    int[][] cartas = album.getMatriz();
-                    int totalFaltantes = 0;
-                    System.out.print("Figurinhas faltantes do álbum " + album.getNome() + ":");
-                    for(int i = 0; i < linhas; i++) {
-                        for(int j = 0; j < colunas; j++) {
-                            if(cartas[i][j] == 0) {
-                                if(totalFaltantes == 0) {
-                                    System.out.println();
-                                }
-                                System.out.println("\tSeleção " + selecoes.getSelecao(i) + " jogador " + j);
-                                totalFaltantes++;
-                            }
-                        }
-                    }
-                    if(totalFaltantes == 0) System.out.println(" não possui");
-                    else System.out.println("Total: " + totalFaltantes + (totalFaltantes > 1? " figurinhas faltantes" : " figurinha faltante"));
+                    mostrarFaltantes(album);
                 }
                 case 5 -> {
                     if(album == null) {
                         System.out.println("Carregue seu álbum primeiro!");
                         continue;
                     }
-                    int[][] cartas = album.getMatriz();
-                    int totalRepetidas = 0;
-                    System.out.print("Figurinhas repetidas do álbum " + album.getNome() + ":");
-                    for(int i = 0; i < linhas; i++) {
-                        for(int j = 0; j < colunas; j++) {
-                            if(cartas[i][j] > 1) {
-                                if(totalRepetidas == 0) {
-                                    System.out.println();
-                                }
-                                System.out.println("\tSeleção " + selecoes.getSelecao(i) + " jogador " + j + " - x" + cartas[i][j]);
-                                totalRepetidas++;
-                            }
-                        }
-                    }
-                    if(totalRepetidas == 0) System.out.println(" não possui");
-                    else System.out.println("Total: " + totalRepetidas + (totalRepetidas > 1? " figurinhas repetidas" : " figurinha repetida"));
+                    mostrarRepetidas(album);
                 }
                 case 6 -> {
                     if(album == null) {
                         System.out.println("Carregue seu álbum primeiro!");
                         continue;
                     }
-                    int[][] figurinhas = album.getMatriz();
-                    double porc = 0;
-                    double porcSelecAtual;
-                    for(int i = 0; i < linhas; i++) {
-                        porcSelecAtual = 0;
-                        for(int j = 0; j < colunas; j++) {
-                            if(figurinhas[i][j] >= 1) {
-                                porc++;
-                                porcSelecAtual++;
-                            }
-                        }
-                        porcSelecAtual /= colunas;
-                        System.out.printf("Seleção %s %.1f%% completa\n", selecoes.getSelecao(i), porcSelecAtual);
-                    }
-                    porc /= linhas * colunas;
-                    System.out.printf("Álbum %.1f%% completo\n", porc);
-                    int figurinhasNovas = 0;
-                    System.out.print("Figurinhas novas desde o carregamento do álbum " + album.getNome() + ":");
-                    for(int i = 0; i < linhas; i++) {
-                        for(int j = 0; j < colunas; j++) {
-                            if(novas[i][j] == 1) {
-                                if(figurinhasNovas == 0) {
-                                    System.out.println();
-                                }
-                                System.out.println("\tSeleção " + selecoes.getSelecao(i) + " jogador " + j);
-                                figurinhasNovas++;
-                            }
-                        }
-                    }
-                    if(figurinhasNovas == 0) System.out.println(" nenhuma");
-                    else System.out.println("Total: " + figurinhasNovas + (figurinhasNovas > 1? " figurinhas novas" : " figurinha nova"));
+                    gerarRelatorio();
                 }
                 case 7 -> {
                     return;
@@ -183,7 +86,7 @@ public class Main {
         }
     }
 
-    private static void inserirCarta(Scanner scanner, Album album, int[][] novas) { //todo fix not finding an album
+    private static void inserirCarta(Album album, int[][] novas) { //todo fix not finding an album
         int jogador, quantidade, selecaoNum = -1;
         while(selecaoNum == -1) {
             System.out.print("Digite o nome da seleção: ");
@@ -215,5 +118,135 @@ public class Main {
         System.out.println("\t6. Gerar relatório");
         System.out.println("\t7. Sair");
         System.out.println("-".repeat(35));
+    }
+
+    private static void carregarAlbum(String nomeArquivo) throws IOException {
+        album = new Album(nomeArquivo, selecoes.getSELECOES(), selecoes.getJOGADORES());
+        linhas = album.getMatriz().length;
+        colunas = album.getMatriz()[0].length;
+        novas = new int[linhas][colunas];
+    }
+
+    private static void troca() throws IOException {
+        String nomeArquivo;
+        Album albumTroca;
+        int[][] albumTrocaMatriz;
+        int[][] albumUsuarioMatriz = album.getMatriz().clone();
+        int[][] novasClone = novas.clone();
+        System.out.print("Álbum com que realizar a troca: ");
+        nomeArquivo = scanner.nextLine().trim().toLowerCase();
+        if(nomeArquivo.equals(album.getNome())) {
+            System.out.println("Você não pode trocar com si mesmo");
+        } else {
+            albumTroca = new Album(nomeArquivo, selecoes.getSELECOES(), selecoes.getJOGADORES());
+            albumTrocaMatriz = albumTroca.getMatriz().clone();
+            if(albumTrocaMatriz.length != linhas || albumTrocaMatriz[0].length != colunas) {
+                System.out.println("Álbuns de tipos diferentes");
+                return;
+            }
+            System.out.println("Calculando as trocas possíveis...\n");
+            for (int i = 0; i < linhas; i++) {
+                for (int j = 0; j < colunas; j++) {
+                    if (albumUsuarioMatriz[i][j] == 0 && albumTrocaMatriz[i][j] > 1) {
+                        for (int k = 0; k < linhas; k++) {
+                            for (int l = 0; l < colunas; l++) {
+                                if (albumTrocaMatriz[k][l] == 0 && albumUsuarioMatriz[k][l] > 1) {
+                                    albumUsuarioMatriz[i][j]++;
+                                    albumTrocaMatriz[i][j]--;
+                                    albumUsuarioMatriz[k][l]--;
+                                    albumTrocaMatriz[k][l]++;
+                                    novasClone[i][j]++;
+                                    System.out.println("Seu álbum recebe seleção " + selecoes.getSelecao(i) + " jogador " + j + " do outro");
+                                    System.out.println("O outro álbum recebe seleção " + selecoes.getSelecao(k) + " jogador " + l + " de você\n");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            System.out.println("Seu álbum atualizado será:");
+            System.out.println(Arrays.deepToString(albumUsuarioMatriz));
+            System.out.println("O outro álbum atualizado será:");
+            System.out.println(Arrays.deepToString(albumTrocaMatriz));
+            System.out.println("Aceitar? (Y/N)");
+            char input = Character.toLowerCase(scanner.next().charAt(0));
+            if(input == 'y') {
+                album.setMatriz(albumUsuarioMatriz);
+                albumTroca.setMatriz(albumTrocaMatriz);
+                novas = novasClone;
+            }
+        }
+    }
+
+    private static void mostrarFaltantes(Album album) {
+        int[][] cartas = album.getMatriz();
+        int totalFaltantes = 0;
+        System.out.print("Figurinhas faltantes do álbum " + album.getNome() + ":");
+        for(int i = 0; i < linhas; i++) {
+            for(int j = 0; j < colunas; j++) {
+                if(cartas[i][j] == 0) {
+                    if(totalFaltantes == 0) {
+                        System.out.println();
+                    }
+                    System.out.println("\tSeleção " + selecoes.getSelecao(i) + " jogador " + j);
+                    totalFaltantes++;
+                }
+            }
+        }
+        if(totalFaltantes == 0) System.out.println(" não possui");
+        else System.out.println("Total: " + totalFaltantes + (totalFaltantes > 1? " figurinhas faltantes" : " figurinha faltante"));
+    }
+
+    private static void mostrarRepetidas(Album album) {
+        int[][] cartas = album.getMatriz();
+        int totalRepetidas = 0;
+        System.out.print("Figurinhas repetidas do álbum " + album.getNome() + ":");
+        for(int i = 0; i < linhas; i++) {
+            for(int j = 0; j < colunas; j++) {
+                if(cartas[i][j] > 1) {
+                    if(totalRepetidas == 0) {
+                        System.out.println();
+                    }
+                    System.out.println("\tSeleção " + selecoes.getSelecao(i) + " jogador " + j + " - x" + cartas[i][j]);
+                    totalRepetidas++;
+                }
+            }
+        }
+        if(totalRepetidas == 0) System.out.println(" não possui");
+        else System.out.println("Total: " + totalRepetidas + (totalRepetidas > 1? " figurinhas repetidas" : " figurinha repetida"));
+    }
+
+    private static void gerarRelatorio() {
+        int[][] figurinhas = album.getMatriz();
+        double porc = 0;
+        double porcSelecAtual;
+        for(int i = 0; i < linhas; i++) {
+            porcSelecAtual = 0;
+            for(int j = 0; j < colunas; j++) {
+                if(figurinhas[i][j] >= 1) {
+                    porc++;
+                    porcSelecAtual++;
+                }
+            }
+            porcSelecAtual /= colunas;
+            System.out.printf("Seleção %s %.1f%% completa\n", selecoes.getSelecao(i), porcSelecAtual);
+        }
+        porc /= linhas * colunas;
+        System.out.printf("Álbum %.1f%% completo\n", porc);
+        int figurinhasNovas = 0;
+        System.out.print("Figurinhas novas desde o carregamento do álbum " + album.getNome() + ":");
+        for(int i = 0; i < linhas; i++) {
+            for(int j = 0; j < colunas; j++) {
+                if(novas[i][j] == 1) {
+                    if(figurinhasNovas == 0) {
+                        System.out.println();
+                    }
+                    System.out.println("\tSeleção " + selecoes.getSelecao(i) + " jogador " + j);
+                    figurinhasNovas++;
+                }
+            }
+        }
+        if(figurinhasNovas == 0) System.out.println(" nenhuma");
+        else System.out.println("Total: " + figurinhasNovas + (figurinhasNovas > 1? " figurinhas novas" : " figurinha nova"));
     }
 }
