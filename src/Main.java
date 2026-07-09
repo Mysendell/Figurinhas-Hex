@@ -173,7 +173,10 @@ public class Main {
             if(input == 'y') {
                 album.setMatriz(albumUsuarioMatriz);
                 albumTroca.setMatriz(albumTrocaMatriz);
+                album.salvarAlbum();
+                albumTroca.salvarAlbum();
                 novas = novasClone;
+                System.out.println("Troca realizada.");
             }
         }
     }
