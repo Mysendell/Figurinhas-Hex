@@ -44,7 +44,11 @@ public class Main {
                         System.out.println("Carregue seu álbum primeiro!");
                         continue;
                     }
-                    inserirCarta(album, novas);
+                    try {
+                        inserirCarta(album, novas);
+                    } catch(IndexOutOfBoundsException e) {
+                        System.out.println("Jogador inexistente");
+                    }
                 }
                 case 3 -> {
                     try {
@@ -86,9 +90,9 @@ public class Main {
         }
     }
 
-    private static void inserirCarta(Album album, int[][] novas) { //todo fix not finding an album
+    private static void inserirCarta(Album album, int[][] novas) throws IndexOutOfBoundsException { //todo fix not finding an album
         int jogador, quantidade, selecaoNum = -1;
-        while(selecaoNum == -1) {
+        while(true) {
             System.out.print("Digite o nome da seleção: ");
             String selecaoNome = scanner.nextLine().trim();
             if (selecaoNome.equals("sair"))

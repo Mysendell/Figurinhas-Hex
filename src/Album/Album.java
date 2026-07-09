@@ -37,7 +37,7 @@ public class Album {
         }
     }
 
-    public void inserirJogador(int selecaoNum, int jogadorNum, int quantidade) {
+    public void inserirJogador(int selecaoNum, int jogadorNum, int quantidade) throws IndexOutOfBoundsException {
         if (jogadorNum >= matriz[selecaoNum].length) {
             System.out.println("Jogador Fora da matriz"); // TODO: shirt number??
         }
