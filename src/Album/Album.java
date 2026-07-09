@@ -49,7 +49,7 @@ public class Album {
     //=======================
     // Método para imprimir o álbum atual
     //=======================
-    void exibirMatriz() {
+    public void exibirMatriz() {
         if (matriz == null) {
             System.out.println("Nenhum álbum carregado.");
             return;
