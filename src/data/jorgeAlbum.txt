@@ -1,5 +1,5 @@
 time1
-0 3 0 0 0 
+0 2 3 0 0 
 alemanha
 0 1 0 2 0 
 bosnia
@@ -8,3 +8,5 @@ chad
 0 1 0 3 0 
 nlogonia
 1 99 0 9 1 
+nova zelandia
+0 0 1 0 0 

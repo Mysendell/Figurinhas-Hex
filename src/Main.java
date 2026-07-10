@@ -7,8 +7,6 @@ import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-// TODO add javadocs to important methods
-// TODO treat exceptions
 
 public class Main {
     static Selecoes selecoes = Selecoes.getInstance();
@@ -25,7 +23,6 @@ public class Main {
                 instrucao = scanner.nextInt();
                 scanner.nextLine();
             } catch (InputMismatchException e) {
-                //System.err.println("erm"); //TODO
                 scanner.nextLine();
                 instrucao = 8;
             }
@@ -102,11 +99,11 @@ public class Main {
                 break;
             System.out.println("Seleção não encontrada, tente de novo, ou digite \"sair\" para desistir");
         }
-        System.out.print("Digite o número do jogador: "); // TODO: Shirt number?
-        jogador = scanner.nextInt();
+        System.out.print("Digite o número do jogador: ");
+        jogador = scanner.nextInt()-1;
         System.out.print("Digite a quantidade de figurinhas a inserir: ");
         quantidade = scanner.nextInt();
-        album.inserirJogador(selecaoNum, jogador, quantidade); //todo treat out of bounds
+        album.inserirJogador(selecaoNum, jogador, quantidade);
         novas[selecaoNum][jogador]++;
         scanner.nextLine();
     }
@@ -149,22 +146,18 @@ public class Main {
                 return;
             }
             System.out.println("Calculando as trocas possíveis...\n");
-            for (int i = 0; i < linhas; i++) {
-                for (int j = 0; j < colunas; j++) {
-                    if (albumUsuarioMatriz[i][j] == 0 && albumTrocaMatriz[i][j] > 1) {
-                        for (int k = 0; k < linhas; k++) {
-                            for (int l = 0; l < colunas; l++) {
-                                if (albumTrocaMatriz[k][l] == 0 && albumUsuarioMatriz[k][l] > 1) {
-                                    albumUsuarioMatriz[i][j]++;
-                                    albumTrocaMatriz[i][j]--;
-                                    albumUsuarioMatriz[k][l]--;
-                                    albumTrocaMatriz[k][l]++;
-                                    novasClone[i][j]++;
-                                    System.out.println("Seu álbum recebe seleção " + selecoes.getSelecao(i) + " jogador " + j + " do outro");
-                                    System.out.println("O outro álbum recebe seleção " + selecoes.getSelecao(k) + " jogador " + l + " de você\n");
-                                }
-                            }
-                        }
+            for(int i=0; i < linhas; i++){
+                for(int j=0; j < colunas; j++){
+                    if(albumUsuarioMatriz[i][j] == 0 && albumTrocaMatriz[i][j] > 1){
+                        albumUsuarioMatriz[i][j]++;
+                        novasClone[i][j]++;
+                        albumTrocaMatriz[i][j]--;
+                        System.out.println("Seu álbum recebe seleção " + selecoes.getSelecao(i) + " jogador " + (j+1) + " do outro");
+                    }
+                    if(albumTrocaMatriz[i][j] == 0 && albumUsuarioMatriz[i][j] > 1){
+                        albumUsuarioMatriz[i][j]--;
+                        albumTrocaMatriz[i][j]++;
+                        System.out.println("O outro álbum recebe seleção " + selecoes.getSelecao(i) + " jogador " + (j+1) + " de você\n");
                     }
                 }
             }
@@ -248,7 +241,7 @@ public class Main {
                     if(figurinhasNovas == 0) {
                         System.out.println();
                     }
-                    System.out.println("\tSeleção " + selecoes.getSelecao(i) + " jogador " + j);
+                    System.out.println("\tSeleção " + selecoes.getSelecao(i) + " jogador " + (j+1));
                     figurinhasNovas++;
                 }
             }

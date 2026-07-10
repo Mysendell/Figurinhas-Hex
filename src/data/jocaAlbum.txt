@@ -1,3 +1,5 @@
+time1
+0 1 1 0 0 
 alemanha
 1 1 0 1 1 
 bosnia
