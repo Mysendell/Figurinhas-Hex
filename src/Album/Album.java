@@ -20,7 +20,7 @@ public class Album {
             // próximas M linhas: valores da matriz que representam as figrinhas
             String linha;
             while ((linha = br.readLine()) != null) {
-                String selecaoNome = linha.trim();
+                String selecaoNome = linha.trim().toLowerCase();
                 String[] valores = br.readLine().trim().split("\\s+");
                 int selecao = Selecoes.getInstance().acharSelecao(selecaoNome);
                 if (selecao == -1) {
@@ -40,6 +40,7 @@ public class Album {
     public void inserirJogador(int selecaoNum, int jogadorNum, int quantidade) throws IndexOutOfBoundsException {
         if (jogadorNum >= matriz[selecaoNum].length) {
             System.out.println("Jogador Fora da matriz"); // TODO: shirt number??
+            return;
         }
         matriz[selecaoNum][jogadorNum] += quantidade;
         this.salvarAlbum();

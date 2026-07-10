@@ -21,7 +21,7 @@ public class Selecoes {
 
             selecoes = new String[SELECOES];
             for (int i = 0; i < SELECOES; i++) {
-                selecoes[i] = br.readLine().trim();
+                selecoes[i] = br.readLine().trim().toLowerCase();
             }
             System.out.println(Arrays.toString(selecoes));
         } catch (IOException e) {
@@ -36,6 +36,7 @@ public class Selecoes {
     }
 
     public int acharSelecao(String selecao){
+        selecao = selecao.trim().toLowerCase();
         for(int i=0; i < SELECOES; i++){
             if(selecoes[i].equals(selecao))
                 return i;

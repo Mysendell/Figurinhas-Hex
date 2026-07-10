@@ -1,6 +1,7 @@
-5 5
-Jorge
-Jorgee
-Jorgeee
-JJorge
-JJJorge
+6 5
+time1
+Alemanha
+Bosnia
+Chad
+Nlogonia
+Nova Zelandia

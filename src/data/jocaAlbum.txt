@@ -1,0 +1,8 @@
+alemanha
+1 1 0 1 1 
+bosnia
+1 1 1 2 1 
+chad
+0 0 0 1 0 
+nlogonia
+0 1 0 1 0 

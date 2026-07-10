@@ -236,10 +236,10 @@ public class Main {
                 }
             }
             porcSelecAtual /= colunas;
-            System.out.printf("Seleção %s %.1f%% completa\n", selecoes.getSelecao(i), porcSelecAtual);
+            System.out.printf("Seleção %s %.1f%% completa\n", selecoes.getSelecao(i), porcSelecAtual*100);
         }
         porc /= linhas * colunas;
-        System.out.printf("Álbum %.1f%% completo\n", porc);
+        System.out.printf("Álbum %.1f%% completo\n", porc*100);
         int figurinhasNovas = 0;
         System.out.print("Figurinhas novas desde o carregamento do álbum " + album.getNome() + ":");
         for(int i = 0; i < linhas; i++) {
