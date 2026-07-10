@@ -7,6 +7,7 @@ public class Utils {
     public static String faltantes(int[][] album){
         StringBuilder albumFaltantes = new StringBuilder("Cartas que faltam para completar o seu album:");
         int numSelecoes = album.length, numJogadores = album[0].length;
+        int total = 0;
 
         for(int i=0; i < numSelecoes; i++){
             StringBuilder selecao = new StringBuilder( Selecoes.getInstance().getSelecao(i) + ":\n");
@@ -15,15 +16,18 @@ public class Utils {
                 if(album[i][j] == 0){
                     temFaltante = true;
                     selecao.append(j+1).append(" ");
+                    total++;
                 }
             }
             if(temFaltante) albumFaltantes.append(selecao).append("\n");
         }
+        albumFaltantes.append("\nTotal cartas faltantes: ").append(total);
         return albumFaltantes.toString();
     }
     public static String repetentes(int[][] album){
         StringBuilder albumRepetentes = new StringBuilder("Cartas que estão repetidas no seu album:");
         int numSelecoes = album.length, numJogadores = album[0].length;
+        int total = 0;
 
         for(int i=0; i < numSelecoes; i++){
             StringBuilder selecao = new StringBuilder(Selecoes.getInstance().getSelecao(i) + ":\n");
@@ -32,10 +36,12 @@ public class Utils {
                 if(album[i][j] > 1){
                     temRepetente = true;
                     selecao.append(j+1).append(" ");
+                    total++;
                 }
             }
             if(temRepetente) albumRepetentes.append(selecao).append("\n");
         }
+        albumRepetentes.append("\nTotal cartas repetidas: ").append(total);
         return albumRepetentes.toString();
     }
     public static String comparar(int[][] album, int[][] album2){
